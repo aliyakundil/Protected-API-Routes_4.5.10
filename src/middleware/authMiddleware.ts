@@ -36,6 +36,10 @@ export async function authenticateToken(
     if (!decoded.isEmailVerified) {
       return res.status(403).json({ error: "Email not verified"})
     }
+
+    if (!decoded.userId) {
+      return res.status(403).json({ error: "You can delete only your own todos"})
+    }
     // Сохраняем в req.user
     req.user = decoded;
     next();

@@ -108,8 +108,8 @@ router.patch("/:id", authenticateToken,
 
 router.delete("/:id", authenticateToken,
   async (req: Request, res: Response) => {
+    const id = req.params.id;
     const user = req.user as AuthJwtPayload;
-    const { id } = req.params;
 
     if (typeof id !== "string") {
       return res.status(400).json({
@@ -118,7 +118,11 @@ router.delete("/:id", authenticateToken,
       });
     }
 
-    const todo = await deleteTodo(user.userId, id);
+    if (user.userId !== id) {
+        return res.status(403).json({ success: false, error: "You can delete only your own profile" });
+      }
+
+    const todo = await deleteTodo(id);
 
     if (!todo) {
       return res.status(404).json({

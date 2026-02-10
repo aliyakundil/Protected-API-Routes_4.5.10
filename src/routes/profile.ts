@@ -172,11 +172,16 @@ router.delete(
   async (req, res, next) => {
     try {
       const id = req.params.id;
+      const user = req.user as AuthJwtPayload;
 
       if (!id || Array.isArray(id)) {
         return res
           .status(400)
           .json({ success: false, error: "Invalid user id" });
+      }
+
+      if (user.userId !== id && user.role !== "admin") {
+        return res.status(403).json({ success: false, error: "You can delete only your own profile or must be admin" });
       }
 
       const deleted = await deleteUserProfile(id);

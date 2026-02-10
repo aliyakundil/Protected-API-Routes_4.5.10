@@ -151,14 +151,8 @@ export async function patchTodo(todoId: string,
   return todoUpdate;
 }
 
-export async function deleteTodo(todoId: string, userId: string): Promise <boolean> {
-  if (!todoId || !userId) return false;
-
-  // const deleted = await Todo.findOneAndDelete({ _id: todoId, userId });
-
-  // return deleted ? true : false;
-
-  const result = await Todo.deleteOne({ _id : new ObjectId(todoId)});
+export async function deleteTodo(todoId: string) {
+  const result = await User.deleteOne({ _id: new ObjectId(todoId) });
   return result.deletedCount === 1;
 }
 
